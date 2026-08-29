@@ -1,7 +1,11 @@
 # src/ingestion/pdf_loader.py
 from pathlib import Path
 
-import fitz  # PyMuPDF
+# PyMuPDF renamed its public module; keep the fallback for older installations.
+try:
+    import pymupdf as fitz
+except ImportError:
+    import fitz  # PyMuPDF < 1.24
 from PIL import Image
 
 
