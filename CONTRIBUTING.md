@@ -17,10 +17,12 @@ Insight Lens is an offline multimodal RAG app. It reads PDFs and images, indexes
    python3.11 -m venv venv
    source venv/bin/activate
    ```
-3. Install [Ollama](https://ollama.com) and pull the model referenced in `.env.example` (`llava:7b` by default):
+3. Install [Ollama](https://ollama.com) and pull the models referenced in `.env.example`:
    ```
    ollama pull llava:7b
+   ollama pull nomic-embed-text
    ```
+   `nomic-embed-text` is a one-time local download used for vector search embeddings. Once it's pulled, the app never needs the network again — this replaces ChromaDB's default embedding function, which otherwise fetches its model from S3 on first run and breaks the offline requirement.
 4. Copy `.env.example` to `.env` and adjust values if needed.
 5. Install the Python dependencies used by the app (streamlit, chromadb, ollama, transformers, torch, torchvision, pymupdf, pillow, python-dotenv). There is no committed lockfile yet; if you add a new dependency, note it in your PR description so the maintainer can pin it.
 6. Start Ollama, then run the app:

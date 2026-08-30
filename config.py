@@ -18,6 +18,7 @@ Path(CHROMA_DB_PATH).mkdir(parents=True, exist_ok=True)
 OLLAMA_HOST = os.getenv("OLLAMA_HOST", "http://localhost:11434")
 OLLAMA_MODEL = os.getenv("OLLAMA_MODEL", "llava:7b")
 OLLAMA_FAST_MODEL = os.getenv("OLLAMA_FAST_MODEL", "llava:7b")
+OLLAMA_EMBED_MODEL = os.getenv("OLLAMA_EMBED_MODEL", "nomic-embed-text")
 
 
 # florence-2

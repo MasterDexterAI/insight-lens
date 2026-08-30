@@ -2,12 +2,24 @@
 import chromadb
 from chromadb.utils import embedding_functions
 
-from config import CHROMA_DB_PATH, CHROMA_COLLECTION_NAME, TOP_K_RESULTS
+from config import (
+    CHROMA_DB_PATH,
+    CHROMA_COLLECTION_NAME,
+    TOP_K_RESULTS,
+    OLLAMA_HOST,
+    OLLAMA_EMBED_MODEL,
+)
 
 _client = chromadb.PersistentClient(path=CHROMA_DB_PATH)
 
-# Default sentence-transformer embedding function, runs locally, no API call
-_embedding_fn = embedding_functions.DefaultEmbeddingFunction()
+# Chroma's DefaultEmbeddingFunction downloads its ONNX model from S3 on first
+# use, which breaks the offline requirement. Route embeddings through the
+# local Ollama server instead: run `ollama pull nomic-embed-text` once during
+# setup and nothing needs the network again after that.
+_embedding_fn = embedding_functions.OllamaEmbeddingFunction(
+    url=OLLAMA_HOST,
+    model_name=OLLAMA_EMBED_MODEL,
+)
 
 _collection = _client.get_or_create_collection(
     name=CHROMA_COLLECTION_NAME,
