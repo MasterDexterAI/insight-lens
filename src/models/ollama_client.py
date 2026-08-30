@@ -5,7 +5,7 @@ import io
 import ollama
 from PIL import Image
 
-from config import OLLAMA_HOST, OLLAMA_MODEL
+from config import OLLAMA_HOST, OLLAMA_MODEL, OLLAMA_FAST_MODEL
 
 _client = ollama.Client(host=OLLAMA_HOST)
 
@@ -49,7 +49,7 @@ def ask_about_image(image: Image.Image, question: str, model: str = None) -> str
 
 def ask_text_only(question: str, model: str = None) -> str:
     """For reasoning steps that do not need an image, e.g. summarizing retrieved captions."""
-    return ask(question, model=model)
+    return ask(question, model=model or OLLAMA_FAST_MODEL)
 
 
 def is_ollama_running() -> bool:
