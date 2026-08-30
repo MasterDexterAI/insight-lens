@@ -6,7 +6,7 @@ from PIL import Image
 from config import UPLOADS_DIR
 from src.rag.pipeline import ingest_pdf, ingest_image, answer_question
 from src.vectorstore.chroma_store import collection_count
-from src.models.ollama_client import is_ollama_running
+from src.models.ollama_client import is_ollama_running, OllamaUnavailableError, OLLAMA_NOT_RUNNING_MESSAGE
 
 st.set_page_config(page_title="Insight Lens", layout="wide")
 
@@ -31,10 +31,14 @@ with st.sidebar:
 
         if st.button("Ingest this file"):
             with st.spinner("Reading the document locally..."):
-                if uploaded_file.name.lower().endswith(".pdf"):
-                    count = ingest_pdf(str(save_path))
-                else:
-                    count = ingest_image(str(save_path))
+                try:
+                    if uploaded_file.name.lower().endswith(".pdf"):
+                        count = ingest_pdf(str(save_path))
+                    else:
+                        count = ingest_image(str(save_path))
+                except ConnectionError:
+                    st.error(OLLAMA_NOT_RUNNING_MESSAGE)
+                    st.stop()
             st.success(f"Indexed {count} page(s).")
 
     st.divider()
@@ -45,7 +49,11 @@ question = st.text_input("Ask a question about your documents")
 
 if question:
     with st.spinner("Searching locally and reasoning over the result..."):
-        result = answer_question(question)
+        try:
+            result = answer_question(question)
+        except OllamaUnavailableError as e:
+            st.error(str(e))
+            st.stop()
 
     st.subheader("Answer")
     st.write(result["answer"])
