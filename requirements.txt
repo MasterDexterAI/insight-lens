@@ -1,0 +1,11 @@
+streamlit
+pillow
+python-dotenv
+pymupdf
+torch
+transformers
+timm
+einops
+chromadb
+ollama
+torchvision
