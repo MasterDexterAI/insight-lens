@@ -28,11 +28,13 @@ def pdf_to_images(pdf_path: str, dpi: int = 200) -> list[dict]:
         pix = page.get_pixmap(matrix=matrix)
         image = Image.frombytes("RGB", (pix.width, pix.height), pix.samples)
 
-        pages.append({
-            "page_number": page_index + 1,
-            "image": image,
-            "source_file": Path(pdf_path).name,
-        })
+        pages.append(
+            {
+                "page_number": page_index + 1,
+                "image": image,
+                "source_file": Path(pdf_path).name,
+            }
+        )
 
     doc.close()
     return pages
